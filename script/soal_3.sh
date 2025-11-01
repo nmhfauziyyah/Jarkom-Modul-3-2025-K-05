@@ -29,6 +29,13 @@ EOF
 touch /etc/bind/named.conf.local
 service bind9 restart
 
+# Jalankan ini di SEMUA node (kecuali Durin):
+cat << EOF > /etc/resolv.conf
+Search K05.com
+nameserver 10.66.3.2
+nameserver 10.66.3.3
+nameserver 10.66.5.2
+EOF
 
 # Cek di Gilgalad
 dig google.com
