@@ -15,7 +15,7 @@ zone "K05.com" {
 
 #tambahkan baris berikut di akhir file:
 # Reverse zone untuk jaringan 10.66.3.0/24
-zone "3.66.2.in-addr.arpa" {
+zone "3.66.10.in-addr.arpa" {
     type master;
     notify yes;
     also-notify { 10.66.3.3; };
@@ -38,8 +38,8 @@ $TTL 604800
 @       IN      NS      ns2.K05.com.
 ;
 ; PTR Records
-10      IN      PTR     ns1.K05.com.    ; 10.66.3.2 -> ns1.K05.com
-11      IN      PTR     ns2.K05.com.    ; 10.66.3.3 -> ns2.K05.com
+2      IN      PTR     ns1.K05.com.    ; 10.66.3.2 -> ns1.K05.com
+3      IN      PTR     ns2.K05.com.    ; 10.66.3.3 -> ns2.K05.com
 
 # 4. Restart dan Konfigurasi Final Nameserver
 service bind9 restart
@@ -48,7 +48,7 @@ service bind9 restart
 # 1. (Amdir) Tambahkan definisi Reverse Zone ke named.conf.local
 nano /etc/bind/named.conf.local
 #tambahkan baris berikut di akhir file:
-zone "3.66.2.in-addr.arpa" {
+zone "3.66.10.in-addr.arpa" {
     type slave;
     masters { 10.66.3.2; };
     file "/var/cache/bind/db.10.66.2";
