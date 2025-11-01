@@ -55,4 +55,6 @@ composer update --no-dev
 
 cp .env.example .env
 
+# Debugging klo error instalasi :
+rm /etc/apt/sources.list.d/php.list
 
