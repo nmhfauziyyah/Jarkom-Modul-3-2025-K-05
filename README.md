@@ -237,7 +237,7 @@ Konfigurasi MariaDB Server sebagai pusat data. Koneksi diizinkan dari IP manapun
 4.  **Restart Layanan:** `service mariadb restart`
 
 #### 📸 Bukti: Verifikasi MariaDB
-![assets/no8a.png](assets/no8a.png)
+![assets/8a.png](assets/8a.png)
 
 ---
 
@@ -260,7 +260,7 @@ Langkah ini dilakukan pada semua Worker untuk mengkonfigurasi aplikasi agar terh
 4.  **Clear Cache:** `php artisan config:clear`, `php artisan cache:clear`, dll.
 
 #### 📸 Bukti: Konfigurasi .env
-![assets/no8b.png](assets/no8b.png)
+![assets/8b.png](assets/8b.png)
 
 ---
 
@@ -281,7 +281,7 @@ Elendil bertanggung jawab menjalankan Migrasi Database dan dikonfigurasi pada Po
 3.  **Aktifkan dan Restart Layanan:** `ln -s .../elendil /etc/nginx/sites-enabled/` dan `service nginx restart`.
 
 #### 📸 Bukti: Migrasi Database
-![assets/no8c.png](assets/no8c.png)
+![assets/8c.png](assets/8c.png)
 
 ---
 
@@ -298,7 +298,7 @@ Isildur dikonfigurasi pada Port 8002 dengan aturan akses domain yang ketat.
 2.  **Aktifkan dan Restart Layanan:** `ln -s .../isildur /etc/nginx/sites-enabled/` dan `service nginx restart`.
 
 #### 📸 Bukti: Konfigurasi Nginx Isildur
-![assets/no8d.png](assets/no8d.png)
+![assets/8d.png](assets/8d.png)
 
 ---
 
@@ -315,4 +315,4 @@ Anarion dikonfigurasi pada Port 8003 dengan aturan akses domain yang ketat.
 2.  **Aktifkan dan Restart Layanan:** `ln -s .../anarion /etc/nginx/sites-enabled/` dan `service nginx restart`.
 
 #### 📸 Bukti: Konfigurasi Nginx Anarion
-![assets/no8e.png](assets/no8e.png)
+![assets/8e.png](assets/8e.png)
