@@ -209,3 +209,110 @@ Persiapan lingkungan untuk menjalankan aplikasi PHP Laravel pada *worker* Elendi
 ![assets/no7.png](assets/no7.png)
 
 ---
+---
+
+## 8. 🛠️ Konfigurasi Database dan Web Worker Laravel
+
+Bagian ini mencakup instalasi MariaDB Server di **Palantir** dan konfigurasi aplikasi Laravel dan Nginx di **Worker** (Elendil, Isildur, Anarion) dengan aturan akses berbasis domain.
+
+### 8.1. Palantir (MariaDB Server)
+
+Konfigurasi MariaDB Server sebagai pusat data. Koneksi diizinkan dari IP manapun selain *localhost* dengan kredensial yang ditentukan.
+
+#### 🛠️ Langkah Konfigurasi Palantir
+
+1.  **Instalasi MariaDB:** `apt-get install -y mariadb-server`
+2.  **Pembuatan Database dan User:**
+    ```bash
+    mysql -e "CREATE DATABASE IF NOT EXISTS dbkelompokK05;"
+    mysql -e "CREATE USER IF NOT EXISTS 'kelompokK05'@'%' IDENTIFIED BY 'passwordK05';"
+    mysql -e "GRANT ALL PRIVILEGES ON dbkelompokK05.* TO 'kelompokK05'@'%';"
+    mysql -e "FLUSH PRIVILEGES;"
+    ```
+3.  **Izinkan Koneksi Eksternal:** Edit `/etc/mysql/mariadb.conf.d/50-server.cnf`
+    ```bash
+    # Mengubah bind-address ke 0.0.0.0 agar dapat diakses oleh semua IP
+    sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+    ```
+4.  **Restart Layanan:** `service mariadb restart`
+
+#### 📸 Bukti: Verifikasi MariaDB
+![assets/no8a.png](assets/no8a.png)
+
+---
+
+### 8.2. Worker (Elendil, Isildur, Anarion) - Setup Aplikasi
+
+Langkah ini dilakukan pada semua Worker untuk mengkonfigurasi aplikasi agar terhubung ke database Palantir.
+
+#### 🛠️ Langkah Setup Aplikasi
+
+1.  **Konfigurasi `.env`:** Arahkan koneksi database ke **Palantir (10.66.4.3)**.
+    ```bash
+    # Isi file .env dengan kredensial database
+    DB_HOST=10.66.4.3
+    DB_DATABASE=dbkelompokK05
+    DB_USERNAME=kelompokK05
+    DB_PASSWORD=passwordK05
+    ```
+2.  **Generate App Key:** `php artisan key:generate`
+3.  **Atur Izin Folder:** `chown -R www-data:www-data /var/www/laravel-simple-rest-api` dan `chmod -R 775 .../storage`
+4.  **Clear Cache:** `php artisan config:clear`, `php artisan cache:clear`, dll.
+
+#### 📸 Bukti: Konfigurasi .env
+![assets/no8b.png](assets/no8b.png)
+
+---
+
+### 8.3. Elendil (Worker 1 - Port 8001)
+
+Elendil bertanggung jawab menjalankan Migrasi Database dan dikonfigurasi pada Port 8001.
+
+#### 🛠️ Langkah Konfigurasi Elendil
+
+1.  **Jalankan Migrasi & Seeding (Hanya di Elendil):**
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+2.  **Konfigurasi Nginx (`/etc/nginx/sites-available/elendil`):**
+    * `listen 8001;`
+    * `server_name elendil.K05.com;`
+    * **Aturan Akses Domain (Wajib):** Menggunakan `if ($host != "elendil.K05.com") { return 444; }` untuk membatasi akses **hanya melalui nama domain**.
+3.  **Aktifkan dan Restart Layanan:** `ln -s .../elendil /etc/nginx/sites-enabled/` dan `service nginx restart`.
+
+#### 📸 Bukti: Migrasi Database
+![assets/no8c.png](assets/no8c.png)
+
+---
+
+### 8.4. Isildur (Worker 2 - Port 8002)
+
+Isildur dikonfigurasi pada Port 8002 dengan aturan akses domain yang ketat.
+
+#### 🛠️ Langkah Konfigurasi Isildur
+
+1.  **Konfigurasi Nginx (`/etc/nginx/sites-available/isildur`):**
+    * `listen 8002;`
+    * `server_name isildur.K05.com;`
+    * **Aturan Akses Domain (Wajib):** `if ($host != "isildur.K05.com") { return 444; }`
+2.  **Aktifkan dan Restart Layanan:** `ln -s .../isildur /etc/nginx/sites-enabled/` dan `service nginx restart`.
+
+#### 📸 Bukti: Konfigurasi Nginx Isildur
+![assets/no8d.png](assets/no8d.png)
+
+---
+
+### 8.5. Anarion (Worker 3 - Port 8003)
+
+Anarion dikonfigurasi pada Port 8003 dengan aturan akses domain yang ketat.
+
+#### 🛠️ Langkah Konfigurasi Anarion
+
+1.  **Konfigurasi Nginx (`/etc/nginx/sites-available/anarion`):**
+    * `listen 8003;`
+    * `server_name anarion.K05.com;`
+    * **Aturan Akses Domain (Wajib):** `if ($host != "anarion.K05.com") { return 444; }`
+2.  **Aktifkan dan Restart Layanan:** `ln -s .../anarion /etc/nginx/sites-enabled/` dan `service nginx restart`.
+
+#### 📸 Bukti: Konfigurasi Nginx Anarion
+![assets/no8e.png](assets/no8e.png)
